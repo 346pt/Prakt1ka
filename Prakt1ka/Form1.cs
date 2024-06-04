@@ -21,11 +21,13 @@ namespace Prakt1ka
         {
             InitializeComponent();
 
+            // Инициализация парковочных мест
             for (int i = 1; i <= 10; i++)
             {
                 parkingSpots.Add(new ParkingSpot { Number = i, IsAvailable = true });
             }
 
+            // Создание нужных столбцов в DataGridView
             ParkingSpotsView.AutoGenerateColumns = false;
             ParkingSpotsView.Columns.Add("Номер", "Номер");
             ParkingSpotsView.Columns.Add("Марка", "Марка");
@@ -46,6 +48,7 @@ namespace Prakt1ka
 
         private void AddButton_Click(object sender, EventArgs e)
         {
+            // Проверка на наличие свободного места
             int freeSpot = FindFreeSpot();
             if (freeSpot == -1)
             {
@@ -53,6 +56,7 @@ namespace Prakt1ka
                 return;
             }
 
+            // Создание нового объекта Car
             Car newCar = new Car
             {
                 Number = Numbertxt.Text,
@@ -64,23 +68,29 @@ namespace Prakt1ka
                 ParkingSpot = freeSpot
             };
 
+            // Добавление машины в список
             cars.Add(newCar);
 
+            // Обновление DataGridView
             UpdateCarsDataGridView();
 
+            // Очистка текстовых полей
             ClearInputFields();
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
+            // Проверка, выбрана ли машина в DataGridView
             if (ParkingSpotsView.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Выберите машину для удаления.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // Получение номера выбранной машины
             string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Номер"].Value.ToString();
 
+            // Поиск машины в списке
             Car carToRemove = cars.FirstOrDefault(c => c.Number == carNumber);
 
             if (carToRemove != null)
@@ -99,14 +109,17 @@ namespace Prakt1ka
 
         private void CalculateCostBtn_Click(object sender, EventArgs e)
         {
+            // Проверка, выбрана ли машина в DataGridView
             if (ParkingSpotsView.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Выберите машину для расчета стоимости.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // Получение номера выбранной машины
             string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Номер"].Value.ToString();
 
+            // Поиск машины в списке
             Car carToCalculate = cars.FirstOrDefault(c => c.Number == carNumber);
 
             if (carToCalculate != null)
@@ -120,6 +133,8 @@ namespace Prakt1ka
                 MessageBox.Show("Машина с таким номером не найдена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        // класс Машины
         public class Car
         {
             public string Number { get; set; }
@@ -131,18 +146,24 @@ namespace Prakt1ka
             public int ParkingSpot { get; set; } 
             public decimal TotalCost { get; set; }
         }
+
+        // класс Парковочного места
         public class ParkingSpot
         {
             public int Number { get; set; }
             public bool IsAvailable { get; set; }
         }
+
+        
         private void SaveBtn_Click(object sender, EventArgs e)
         {
+            // Сохранение в файл
             SaveToFile();
         }
 
         private void LoadBtn_Click(object sender, EventArgs e)
         {
+            // Загрузка из файла
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Текстовый файл|*.txt";
             openFileDialog1.Title = "Открыть данные об активностях";
@@ -160,8 +181,10 @@ namespace Prakt1ka
                 }
             }
         }
+
         private int FindFreeSpot()
         {
+            // Поиск свободного места
             for (int i = 0; i < parkingSpots.Count; i++)
             {
                 if (parkingSpots[i].IsAvailable)
@@ -174,6 +197,7 @@ namespace Prakt1ka
 
         private void UpdateCarsDataGridView()
         {
+            // Обновление DataGridView
             ParkingSpotsView.Rows.Clear();
 
             foreach (Car car in cars)
@@ -186,6 +210,7 @@ namespace Prakt1ka
 
         private void ClearInputFields()
         {
+            // Очистка полей
             Numbertxt.Clear();
             Brandtxt.Clear();
             Modeltxt.Clear();
@@ -198,6 +223,7 @@ namespace Prakt1ka
 
         private void SaveToFile()
         {
+            // Метод сохранение в файл
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Текстовый файл|*.txt";
             saveFileDialog1.Title = "Сохранить данные о ТС";
@@ -214,8 +240,10 @@ namespace Prakt1ka
             }
         }
         
+        //Метод для поиска стоимости 
         private decimal CalculateCost(DateTime arrivalTime, DateTime departureTime)
         {
+            // Рассчитываем стоимость (например, 10 рублей в час)
             TimeSpan duration = departureTime - arrivalTime;
             return (decimal)duration.TotalHours * 15;
         }
