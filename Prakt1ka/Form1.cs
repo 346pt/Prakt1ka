@@ -13,6 +13,7 @@ namespace Prakt1ka
 {
     public partial class Form1 : Form
     {
+
         private List<Car> cars = new List<Car>();
         private List<ParkingSpot> parkingSpots = new List<ParkingSpot>();
         private string fileName = "parking.txt";
@@ -27,14 +28,14 @@ namespace Prakt1ka
             }
 
             ParkingSpotsView.AutoGenerateColumns = false;
-            ParkingSpotsView.Columns.Add("Номер", "Номер");
-            ParkingSpotsView.Columns.Add("Марка", "Марка");
-            ParkingSpotsView.Columns.Add("Модель", "Модель");
-            ParkingSpotsView.Columns.Add("Цвет", "Цвет");
-            ParkingSpotsView.Columns.Add("Время прибытия", "Время прибытия");
-            ParkingSpotsView.Columns.Add("Время выезда", "Время выезда");
-            ParkingSpotsView.Columns.Add("Парковочное место", "Парковочное место");
-            ParkingSpotsView.Columns.Add("Стоимость", "Стоимость");
+            ParkingSpotsView.Columns.Add("Number", "Number");
+            ParkingSpotsView.Columns.Add("Brand", "Brand");
+            ParkingSpotsView.Columns.Add("Model", "Model");
+            ParkingSpotsView.Columns.Add("Color", "Color");
+            ParkingSpotsView.Columns.Add("Arrival Time", "Arrival Time");
+            ParkingSpotsView.Columns.Add("Departure Time", "Departure Time");
+            ParkingSpotsView.Columns.Add("Parking spot", "Parking spot");
+            ParkingSpotsView.Columns.Add("Cost", "Cost");
 
             UpdateCarsDataGridView();
         }
@@ -49,7 +50,7 @@ namespace Prakt1ka
             int freeSpot = FindFreeSpot();
             if (freeSpot == -1)
             {
-                MessageBox.Show("Все места заняты!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("All places are occupied!", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -75,11 +76,11 @@ namespace Prakt1ka
         {
             if (ParkingSpotsView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите машину для удаления.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Select the vehicle to delete.", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Номер"].Value.ToString();
+            string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Number"].Value.ToString();
 
             Car carToRemove = cars.FirstOrDefault(c => c.Number == carNumber);
 
@@ -93,7 +94,7 @@ namespace Prakt1ka
             }
             else
             {
-                MessageBox.Show("Машина с таким номером не найдена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Vehicle with this number has not been found.", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -101,11 +102,11 @@ namespace Prakt1ka
         {
             if (ParkingSpotsView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите машину для расчета стоимости.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Select the vehicle to calculate the cost.", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Номер"].Value.ToString();
+            string carNumber = ParkingSpotsView.SelectedRows[0].Cells["Number"].Value.ToString();
 
             // Поиск машины в списке
             Car carToCalculate = cars.FirstOrDefault(c => c.Number == carNumber);
@@ -118,7 +119,7 @@ namespace Prakt1ka
             }
             else
             {
-                MessageBox.Show("Машина с таким номером не найдена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Vehicle with this number has not been found", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -150,7 +151,7 @@ namespace Prakt1ka
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Текстовый файл|*.txt";
-            openFileDialog1.Title = "Открыть данные об активностях";
+            openFileDialog1.Title = "Open data about cars";
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -206,7 +207,7 @@ namespace Prakt1ka
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Текстовый файл|*.txt";
-            saveFileDialog1.Title = "Сохранить данные о ТС";
+            saveFileDialog1.Title = "Save data about vehicle";
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
