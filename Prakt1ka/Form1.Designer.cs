@@ -54,6 +54,8 @@
             ArriveTimepicker = new DateTimePicker();
             DepartureTimepicker = new DateTimePicker();
             label1 = new Label();
+            label2 = new Label();
+            WholeCost = new Button();
             ((System.ComponentModel.ISupportInitialize)ParkingSpotsView).BeginInit();
             SuspendLayout();
             // 
@@ -293,12 +295,37 @@
             label1.TabIndex = 24;
             label1.Text = "Парковочная стоянка";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("MV Boli", 9.75F);
+            label2.Location = new Point(338, 459);
+            label2.Name = "label2";
+            label2.Size = new Size(197, 17);
+            label2.TabIndex = 25;
+            label2.Text = "Общая стоимость парковки:";
+            // 
+            // WholeCost
+            // 
+            WholeCost.BackColor = SystemColors.ActiveBorder;
+            WholeCost.BackgroundImage = Properties.Resources.red;
+            WholeCost.Location = new Point(338, 483);
+            WholeCost.Name = "WholeCost";
+            WholeCost.Size = new Size(80, 27);
+            WholeCost.TabIndex = 26;
+            WholeCost.Text = "Вычислить";
+            WholeCost.UseVisualStyleBackColor = false;
+            WholeCost.Click += WholeCost_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.LightYellow;
             ClientSize = new Size(753, 522);
+            Controls.Add(WholeCost);
+            Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(DepartureTimepicker);
             Controls.Add(ArriveTimepicker);
@@ -359,5 +386,7 @@
         private DateTimePicker ArriveTimepicker;
         private DateTimePicker DepartureTimepicker;
         private Label label1;
+        private Label label2;
+        private Button WholeCost;
     }
 }

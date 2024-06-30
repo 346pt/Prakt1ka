@@ -96,6 +96,8 @@ namespace Prakt1ka
             {
                 MessageBox.Show("Vehicle with this number has not been found.", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            GenerateReceipt(carToRemove);
+            saveTicket(carToRemove);
         }
 
         private void CalculateCostBtn_Click(object sender, EventArgs e)
@@ -130,8 +132,8 @@ namespace Prakt1ka
             public string Model { get; set; }
             public string Color { get; set; }
             public DateTime ArrivalTime { get; set; }
-            public DateTime DepartureTime { get; set; } 
-            public int ParkingSpot { get; set; } 
+            public DateTime DepartureTime { get; set; }
+            public int ParkingSpot { get; set; }
             public decimal TotalCost { get; set; }
         }
 
@@ -141,7 +143,7 @@ namespace Prakt1ka
             public bool IsAvailable { get; set; }
         }
 
-        
+
         private void SaveBtn_Click(object sender, EventArgs e)
         {
             SaveToFile();
@@ -176,7 +178,7 @@ namespace Prakt1ka
                     return parkingSpots[i].Number;
                 }
             }
-            return -1; 
+            return -1;
         }
 
         private void UpdateCarsDataGridView()
@@ -220,11 +222,106 @@ namespace Prakt1ka
                 }
             }
         }
-        
+
+        private void saveTicket(Car car)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Текстовый файл|*.txt";
+            saveFileDialog1.Title = "Save ticket";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName))
+                {
+                    file.WriteLine($@"
+    Парковочная стоянка
+
+    Номер автомобиля: {car.Number}
+    Марка: {car.Brand}
+    Модель: {car.Model}
+    Цвет: {car.Color}
+
+    Время заезда: {car.ArrivalTime:yyyy-MM-dd HH:mm:ss}
+    Время выезда: {car.DepartureTime:yyyy-MM-dd HH:mm:ss}
+
+    Время пребывания: {(car.DepartureTime - car.ArrivalTime).TotalHours:F2} ч.
+    Стоимость часа: {CalculateHourlyRate(car)} руб.
+    Итого к оплате: {car.TotalCost} руб.
+
+    Спасибо за посещение!");
+                }
+            }
+        }
+
         private decimal CalculateCost(DateTime arrivalTime, DateTime departureTime)
         {
             TimeSpan duration = departureTime - arrivalTime;
             return (decimal)duration.TotalHours * 15;
+        }
+
+        public void GenerateReceipt(Car car)
+        {
+            string receiptText = $@"
+            Праковочная стоянка
+
+            Номер автомобиля: {car.Number}
+            Марка: {car.Brand}
+            Модель: {car.Model}
+            Цвет: {car.Color}
+
+            Время заезда: {car.ArrivalTime:yyyy-MM-dd HH:mm:ss}
+            Время выезда: {car.DepartureTime:yyyy-MM-dd HH:mm:ss}
+
+            Время пребывания: {(car.DepartureTime - car.ArrivalTime).TotalHours:F2} ч.
+            Стоимость часа: {CalculateHourlyRate(car)} руб.
+            Итого к оплате: {car.TotalCost} руб.
+
+            Спасибо за посещение!
+            ";
+
+            MessageBox.Show(receiptText, "Чек", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SaveToFile();
+        }
+
+        private decimal CalculateHourlyRate(Car car)
+        {
+            return 15;
+        }
+
+        private decimal CalculateTotalParkingCost()
+        {
+            decimal totalCost = 0;
+            foreach (Car car in cars)
+            {
+                // Проверка, что время выезда установлено (машина покинула парковку)
+                if (car.DepartureTime != DateTime.MinValue)
+                {
+                    car.TotalCost = CalculateParkingCost(car);
+                    totalCost += car.TotalCost;
+                }
+            }
+            return totalCost;
+        }
+
+        private decimal CalculateParkingCost(Car car)
+        {
+            TimeSpan parkingTime = car.DepartureTime - car.ArrivalTime;
+            decimal hourlyRate = CalculateHourlyRate(car);
+            // Округляем время парковки до полного часа вверх
+            int totalHours = (int)Math.Ceiling(parkingTime.TotalHours);
+            return totalHours * hourlyRate;
+        }
+
+        private void UpdateTotalCostLabel()
+        {
+            decimal totalCost = CalculateTotalParkingCost();
+            label2.Text = $"Общая стоимость парковки: {totalCost} руб.";
+        }
+
+        private void WholeCost_Click(object sender, EventArgs e)
+        {
+            CalculateTotalParkingCost();
+            UpdateTotalCostLabel();
         }
     }
 }
